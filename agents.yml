@@ -48,9 +48,14 @@ Resources:
           Secrets:
             - Name: BUILDKITE_AGENT_TOKEN
               ValueFrom: !Ref BuildkiteAgentTokenParameterPath
+          MountPoints:
+            - ContainerPath: /var/run/postgresql
+              SourceVolume: postgresctl
           DependsOn:
             - ContainerName: agent-init
               Condition: SUCCESS
+            - ContainerName: postgres
+              Condition: HEALTHY
           VolumesFrom:
             - SourceContainer: agent-init
         - Name: agent-init
@@ -67,6 +72,32 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-group: /aws/ecs/rails
               awslogs-stream-prefix: ecs
+        - Name: postgres
+          Essential: true
+          Image: postgres:12
+          Environment:
+            - Name: POSTGRES_PASSWORD
+              Value: foo
+          Command:
+            - postgres
+            - -c
+            - listen_addresses=
+          HealthCheck:
+            Command:
+              - test
+              - -S
+              - /var/run/postgresql/.s.PGSQL.5432
+          MountPoints:
+            - ContainerPath: /var/run/postgresql
+              SourceVolume: postgresctl
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: /aws/ecs/rails
+              awslogs-stream-prefix: ecs
+      Volumes:
+        - Name: postgresctl
       Cpu: 4096
       Memory: 8192
       Family: rails
