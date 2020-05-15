@@ -18,7 +18,7 @@ Resources:
     Type: Buildkite::ECS::TaskDefinition
     Properties:
       Image: keithduncan/buildkite-base
-      BuildkiteAgentImage: keithduncan/buildkite-sidecar
+      BuildkiteAgentImage: !Ref BuildkiteAgentImage
       TaskFamily: buildkite
 
   Rails:
