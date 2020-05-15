@@ -36,7 +36,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-region: !Ref AWS::Region
-              awslogs-group: !Sub /aws/ecs/rails
+              awslogs-group: /aws/ecs/rails
               awslogs-stream-prefix: ecs
           Environment:
             - Name: BUILDKITE_BUILD_PATH
@@ -65,7 +65,7 @@ Resources:
             LogDriver: awslogs
             Options:
               awslogs-region: !Ref AWS::Region
-              awslogs-group: !Sub /aws/ecs/rails
+              awslogs-group: /aws/ecs/rails
               awslogs-stream-prefix: ecs
       Cpu: 4096
       Memory: 8192
@@ -105,5 +105,5 @@ Resources:
     Type: AWS::Logs::LogGroup
     DependsOn: Rails
     Properties:
-      LogGroupName: !Sub /aws/ecs/rails
+      LogGroupName: /aws/ecs/rails
       RetentionInDays: 1
